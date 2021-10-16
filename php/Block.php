@@ -92,10 +92,11 @@ class Block {
 			<?php endforeach;	?>
 			</ul><p><?php echo 'The current post ID is ' .  get_the_ID() . '.'; ?></p>
 
-			<?php
+						<?php
 			$query = new WP_Query(  array(
 				'post_type' => ['post', 'page'],
 				'post_status' => 'any',
+				'posts_per_page' => 3,
 				'date_query' => array(
 					array(
 						'hour'      => 9,
@@ -108,20 +109,20 @@ class Block {
 				),
                 'tag'  => 'foo',
                 'category_name'  => 'baz',
-				  'post__not_in' => [ get_the_ID() ],
-				  'meta_value' => 'Accepted',
+				'post__not_in' => [ get_the_ID() ],
+				'meta_value' => 'Accepted',
 			));
-
-			if ( $query->found_posts ) :
+			if ( $query->found_posts ) {
 				?>
-				 <h2>Any 5 posts with the tag of foo and the category of baz</h2>
-                <ul>
-                <?php
-
-                 foreach ( array_slice( $query->posts, 0, 5 ) as $post ) :
-                    ?><li><?php echo $post->post_title ?></li><?php
-				endforeach;
-			endif;
+				<h2>Any 5 posts with the tag of foo and the category of baz</h2>
+				<?php
+				while ( $query->have_posts() ) {
+					$query->the_post(); 
+					?>
+					<li><?php echo get_the_title(); ?></li>
+					<?php 
+				}
+			}
 		 	?>
 			</ul>
 		</div>
